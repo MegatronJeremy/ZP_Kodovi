@@ -42,7 +42,7 @@ def decrypt(a, n):
 
 
 def main():
-    a = 'tagujtricrnjesav'
+    a = 'taguj tri crnje'
     a = a.replace(' ', 'x')
 
     n = 3

@@ -23,7 +23,7 @@ def decrypt(c: str, key: list[int]):
 
 def main():
     a = 'GLASSOFJUICE'
-    k = [4, 3, 1, 2, 5, 6, 7]
+    k = [4, 3, 1, 2]
 
     while len(a) % len(k) != 0:
         a += 'X'

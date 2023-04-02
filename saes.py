@@ -65,10 +65,10 @@ def add_key(k, m):
     return k ^ m
 
 def main():
-    k1 = 0x99D
+    k1 = 0x5B9F
     k2 = gen_key(k1, 0x80)
     k3 = gen_key(k2, 0x30)
-    m = 0xA10C
+    m = 0x2468
     print(f'Keys: {hex(k1)}, {hex(k2)}, {hex(k3)}')
 
     m = add_key(k1, m)
@@ -76,7 +76,9 @@ def main():
 
     m = nibble_subs(m)
     m = shift_row(m)
+    print(f'Before mix columns: {hex(m)}')
     m = mix_column(m)
+    print(f'After mix columns: {hex(m)}')
     m = add_key(k2, m)
     print(f'Round 1: {hex(m)}')
 
