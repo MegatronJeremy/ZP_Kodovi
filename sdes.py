@@ -1,101 +1,95 @@
-pc1 = [3, 5, 2, 7, 4, 10, 1, 9, 8, 7]
+pc1 = [3, 5, 2, 7, 4, 10, 1, 9, 8, 6]
+rot1 = 1
+rot2 = 2
 pc2 = [6, 3, 7, 4, 8, 5, 10, 9]
 ip = [2, 6, 3, 1, 4, 8, 5, 7]
-ip_inv = [4, 1, 3, 5, 7, 2, 8, 6]
+ip_i = [4, 1, 3, 5, 7, 2, 8, 6]
 e = [4, 1, 2, 3, 2, 3, 4, 1]
-s1 = [[1, 0, 3, 2],[3, 2, 1, 0], [0, 2, 1, 3], [3, 1, 0, 2]]
+s1 = [[1, 0, 3, 2], [3, 2, 1, 0], [0, 2, 1, 3], [3, 1, 0, 2]]
 s2 = [[0, 1, 2, 3], [2, 0, 1, 3], [3, 0, 1, 2], [2, 1, 0, 3]]
 p = [2, 4, 3, 1]
 
-def key_iter(k, rot):
-    k_e = [0 for _ in range(8)]
-    k_lf = [0 for _ in range(5)]
-    k_rf = [0 for _ in range(5)]
 
-    k_lf = k[0:5]
-    k_rf = k[5:10]
+def permute(m, p):
+    m_ret = []
+    for i in range(len(p)):
+        m_ret.append(m[p[i]-1])
+    return m_ret
 
-    k_lf = k_lf[rot:] + k_lf[0:rot]
-    k_rf = k_rf[rot:] + k_rf[0:rot]
 
-    k = k_lf + k_rf
+def gen_key(k, rot):
+    m = len(k)
+    n = m//2
+    k_l = k[rot:n] + k[0:rot]
+    k_r = k[n+rot:m] + k[n:n+rot]
+    k = k_l + k_r
+    return permute(k, pc2), k
 
-    k1 = k_e[:]
-    for i in range(8):
-        k1[i] = k[pc2[i]-1]
+def f_iter(m, k):
+    m = permute(m, e)
+    for i in range(len(m)):
+        m[i] = m[i] ^ k[i]
 
-    return k, k1
+    i1 = (m[0] << 1) + m[3]
+    j1 = (m[1] << 1) + m[2] 
+    i2 = (m[4] << 1) + m[7]
+    j2 = (m[5] << 1) + m[6] 
 
-def func(m, k):
-    l0 = m[0:4]
-    r0 = m[4:]
+    c1 = s1[i1][j1]
+    c2 = s2[i2][j2]
+
+    m = [(c1 & 0b10) >> 1, c1 & 0b1]
+    m += [(c2 & 0b10) >> 1, c2 & 0b1]
+
+    m = permute(m, p)
+    return m
+
+def round(t, k):
+    m = len(k)
+    n = m//2
     
-    r_e = [0 for _ in range(8)]
-    for i in range(8):
-        r_e[i] = r0[e[i]-1]
-        r_e[i] = r_e[i] ^ k[i]
+    l0 = t[0:n]
+    r0 = t[n:m]
 
-    r1 = r0[:]
-    t1 = (r_e[0] << 1) | r_e[3]
-    t2 = (r_e[1] << 1) | r_e[2]
+    r1 = f_iter(r0, k)
+    print('m after function:', ''.join([str(c) for c in r1]))
 
-    v = s1[t1][t2]
+    for i in range(len(r1)):
+        r1[i] = r1[i] ^ l0[i]
+
+    return r0 + r1
+
+
+
+k = [1, 0, 1, 0, 0, 0, 0, 0, 1, 0]
+k = permute(k, pc1)
+k1, k = gen_key(k, rot1)
+k2, k = gen_key(k, rot2)
+
+print('k1:', ''.join([str(c) for c in k1]))
+print('k2:', ''.join([str(c) for c in k2]))
+
+m = [1, 0, 1, 1, 1, 1, 0, 1]
+m = permute(m, ip)
+
+print('m after ip:', ''.join([str(c) for c in m]))
+
+m = round(m, k1)
+print('m after round 1:', ''.join([str(c) for c in m]))
+
+m = round(m, k2)
+print('m after round 2:', ''.join([str(c) for c in m]))
+
+m = m[len(m)//2: len(m)] + m[0:len(m)//2]
+m = permute(m, ip_i)
+print('final message:', ''.join([str(c) for c in m]))
+
+
+
+
+
+
+
+
+
     
-    r1[0] = (v & 0b10) >> 1
-    r1[1] = v & 0b1
-
-    t1 = (r_e[4] << 1) | r_e[7]
-    t2 = (r_e[5] << 1) | r_e[6]
-
-    v = s2[t1][t2]
-
-    r1[2] = (v & 0b10) >> 1
-    r1[3] = v & 0b1
-
-    r2 = r1[:]
-    for i in range(4):
-        r2[i] = r1[p[i]-1]
-
-    for i in range(4):
-        l0[i] = l0[i] ^ r2[i]
-    
-    return r0 + l0
-
-
-k = [1,0,1,0,0,0,0,0,1,0]
-m = [1,0,1,1,1,1,0,1]
-
-k_t = [0 for _ in range(10)]
-for i in range(len(k)):
-    k_t[i] = k[pc1[i]-1]
-k = k_t
-
-k, k1 = key_iter(k, 1)
-
-print('Key 1:', k1)
-
-k, k2 = key_iter(k, 2)
-
-print('Key 2:', k2)
-
-m_t = [0 for _ in range(8)]
-for i in range(8):
-    m_t[i] = m[ip[i]-1]
-m = m_t
-
-print('After IP:', m)
-
-m1 = func(m, k1)
-print('After round 1:', m1)
-
-m2 = func(m1, k2)
-print('After round 2:', m2)
-
-m2 = m2[4:] + m2[0:4]
-for i in range(8):
-    m_t[i] = m2[ip_inv[i]-1]
-m = m_t
-print('After IP-1 and swap:', m)
-
-
-
