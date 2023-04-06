@@ -30,4 +30,6 @@ def miller_rabin(n, k=40):
     return True
 
 
-print(miller_rabin(561))
+#print(miller_rabin(561))
+print(single_test(91, 9))
+print(single_test(91, 11))

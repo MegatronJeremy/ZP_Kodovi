@@ -59,11 +59,11 @@ def func(m, k):
     for i in range(4):
         l0[i] = l0[i] ^ r2[i]
     
-    return l0 + r0
+    return r0 + l0
 
 
-k = [0,0,1,1,0,0,1,1,0,0]
-m = [0,0,1,1,1,1,0,0]
+k = [1,0,1,0,0,0,0,0,1,0]
+m = [1,0,1,1,1,1,0,1]
 
 k_t = [0 for _ in range(10)]
 for i in range(len(k)):
@@ -72,30 +72,30 @@ k = k_t
 
 k, k1 = key_iter(k, 1)
 
-print(k1)
+print('Key 1:', k1)
 
 k, k2 = key_iter(k, 2)
 
-print(k2)
+print('Key 2:', k2)
 
 m_t = [0 for _ in range(8)]
 for i in range(8):
     m_t[i] = m[ip[i]-1]
 m = m_t
 
-print(m)
+print('After IP:', m)
 
 m1 = func(m, k1)
-print(m1)
-m1 = m1[4:] + m1[0:4]
-print(m1)
+print('After round 1:', m1)
 
 m2 = func(m1, k2)
+print('After round 2:', m2)
 
+m2 = m2[4:] + m2[0:4]
 for i in range(8):
     m_t[i] = m2[ip_inv[i]-1]
 m = m_t
-print(m)
+print('After IP-1 and swap:', m)
 
 
 
