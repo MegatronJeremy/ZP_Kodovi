@@ -27,7 +27,7 @@ def main():
     a = isqrt(n) + 1
     while True:
         b2 = a ** 2 - n
-        if sqrt(b2) ** 2 == b2:
+        if isqrt(b2) ** 2 == b2:
             b = isqrt(b2)
             break
         a = a + 1
