@@ -12,7 +12,7 @@ def encrypt(a, key):
         for j in range(m):
             t = 0
             for k in range(m):
-                t = (t + key[k][j] * a_lst[p + k]) % 26
+                t = (t + key[k][j] * a_lst[p + k]) % 37
             c += chr(t + 65)
         p += m
 
@@ -47,7 +47,7 @@ def cofactor(a: list[list[int]]):
             b_sub = []
             for k in range(len(a_sub)):
                 b_sub.append(a_sub[k][:j] + a_sub[k][j + 1:])
-            c[i][j] = pow(-1, i + j) * determinant(b_sub) % 26
+            c[i][j] = pow(-1, i + j) * determinant(b_sub) % 37
 
     return c
 
@@ -64,13 +64,13 @@ def mul(a: list[list[int]], k):
     n = len(a)
     for i in range(n):
         for j in range(n):
-            a[i][j] = (a[i][j] * k) % 26
+            a[i][j] = (a[i][j] * k) % 37
     return a
 
 
 def decrypt(c, key):
-    det = determinant(key) % 26
-    inv_det = pow(det, -1, 26)
+    det = determinant(key) % 37
+    inv_det = pow(det, -1, 37)
 
     cof = cofactor(key)
 
@@ -84,12 +84,15 @@ def decrypt(c, key):
 
 
 def main():
-    k = [[3, 25, 4], [23, 6, 15], [13, 17, 21]]
-    a = "fhauflakjfhdasflkjh"
-    a = a.upper()
+    #k = [[3, 25, 4], [23, 6, 15], [13, 17, 21]]
+    k = [[11, 24], [13, 8]]
+    #a = "ahauflakjfhdasflkjh"
+    #a = a.upper()
 
-    c = encrypt(a, k)
-    print(c)
+    #c = encrypt(a, k)
+   # print(c)
+
+    c = "1KVO3K"
 
     d = decrypt(c, k)
     print(d)

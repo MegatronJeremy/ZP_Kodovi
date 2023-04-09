@@ -65,10 +65,10 @@ def add_key(k, m):
     return k ^ m
 
 def main():
-    k1 = 0x5B9F
+    k1 = 0x99D
     k2 = gen_key(k1, 0x80)
     k3 = gen_key(k2, 0x30)
-    m = 0x2468
+    m = 0x24BB
     print(f'Keys: {hex(k1)}, {hex(k2)}, {hex(k3)}')
 
     m = add_key(k1, m)

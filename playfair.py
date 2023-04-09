@@ -55,8 +55,8 @@ def decrypt(a: str, key_dict, inv_dict):
 
 
 def main():
-    a = 'venividivici'
-    key = 'sunce'
+    a = 'perangustaadaugusta'
+    key = 'disleksija'
 
     a = a.upper()
     a = a.replace(' ', 'X')
